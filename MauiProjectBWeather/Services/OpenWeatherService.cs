@@ -8,23 +8,43 @@ using System.Threading.Tasks;
 using System.Text.Json;
 
 using MauiProjectBWeather.Models;
+using System.Collections.Concurrent;
 
 namespace MauiProjectBWeather.Services
 {
     public class OpenWeatherService
     {
         HttpClient httpClient = new HttpClient();
-        
+        ConcurrentDictionary<(string, string), Forecast> cachedCityForecasts = new ConcurrentDictionary<(string, string), Forecast>();
         //Your API Key
-        readonly string apiKey = "";
+        readonly string apiKey = "2c4b136042f0d448c152ee1a9ea61886";
 
         public async Task<Forecast> GetForecastAsync(string City)
         {
-            //https://openweathermap.org/current
-            var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var uri = $"https://api.openweathermap.org/data/2.5/forecast?q={City}&units=metric&lang={language}&appid={apiKey}";
 
-            Forecast forecast = await ReadWebApiAsync(uri);
+            Forecast forecast;
+
+            var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+
+            if (!cachedCityForecasts.TryGetValue((City, date), out forecast))
+            {
+
+                //https://openweathermap.org/current
+                var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                var uri = $"https://api.openweathermap.org/data/2.5/forecast?q={City}&units=metric&lang={language}&appid={apiKey}";
+
+
+
+                forecast = await ReadWebApiAsync(uri);
+
+                cachedCityForecasts[(City, DateTime.Now.ToString(date))] = forecast;
+
+                return forecast;
+
+
+            }
+
+       
             return forecast;
 
         }

@@ -1,24 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Definierar en ContentPage med namnrymderna för .NET MAUI och XAML samt klassen "ForecastPage" -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiProjectBWeather.Views.ForecastPage">
+    <!-- Innehåll för ContentPage -->
     <ContentPage.Content>
+        <!-- En StackLayout för att arrangera elementen i en stapel -->
         <StackLayout>
+            <!-- En knapp för att uppdatera (refresh) väderprognosen. När knappen klickas aktiveras händelsen Button_Clicked -->
             <Button Text="Refresh" Clicked="Button_Clicked" />
-
-            <!-- Your XAML code to present the weather data in a ListView-->
-            <!-- 
+            <!-- En ListView för att visa den grupperade väderprognosen -->
             <ListView x:Name="GroupedForecast" IsGroupingEnabled="true" HasUnevenRows="true">
+                <!-- Mall för gruppens rubrik -->
                 <ListView.GroupHeaderTemplate>
                     <DataTemplate>
+                        <ViewCell Height="60">
+                            <!-- En etikett för att visa datumet som rubrik för varje grupp -->
+                            <Label FontSize="20" Text="{Binding Key, StringFormat='{0:D}'}" Padding="20" TextColor="DarkCyan"/>
+                        </ViewCell>
                     </DataTemplate>
                 </ListView.GroupHeaderTemplate>
+                <!-- Mall för varje element i listan -->
                 <ListView.ItemTemplate>
                     <DataTemplate>
+                        <ViewCell>
+                            <!-- En stapel som innehåller information om väderprognosen -->
+                            <StackLayout Orientation="Horizontal" Padding="5" Spacing="10">
+                                <!-- En bild för att visa ikonen för vädret -->
+                                <Image Source="{Binding Icon}" WidthRequest="30" HeightRequest="30"/>
+                                <!-- En stapel för att visa övrig information om väderprognosen -->
+                                <StackLayout Orientation="Vertical">
+                                    <!-- Etikett för att visa tiden för väderprognosen -->
+                                    <Label Text="{Binding DateTime, StringFormat='{0:t}'}"/>
+                                    <!-- Etikett för att visa väderbeskrivningen -->
+                                    <Label Text="{Binding Description}"/>
+                                    <!-- En stapel för att visa temperatur och vindhastighet -->
+                                    <StackLayout Orientation="Horizontal">
+                                        <!-- Etikett för att visa temperaturen -->
+                                        <Label Text="{Binding Temperature, StringFormat='Temperature: {0} C'}" WidthRequest="150"/>
+                                        <!-- Etikett för att visa vindhastigheten -->
+                                        <Label Text="{Binding WindSpeed, StringFormat='WindSpeed: {0} m/s'}"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            -->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
